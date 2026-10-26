@@ -1,0 +1,39 @@
+IF DB_ID(N'QLHS') IS NULL
+    CREATE DATABASE QLHS;
+GO
+USE QLHS;
+GO
+
+IF OBJECT_ID(N'dbo.HocSinh', N'U') IS NOT NULL DROP TABLE dbo.HocSinh;
+IF OBJECT_ID(N'dbo.Lop', N'U') IS NOT NULL DROP TABLE dbo.Lop;
+GO
+
+CREATE TABLE dbo.Lop (
+    MaLop NVARCHAR(10) NOT NULL PRIMARY KEY,
+    TenLop NVARCHAR(50) NOT NULL
+);
+GO
+
+CREATE TABLE dbo.HocSinh (
+    MaHS NVARCHAR(10) NOT NULL PRIMARY KEY,
+    TenHS NVARCHAR(100) NOT NULL,
+    NgaySinh DATE NOT NULL,
+    DiaChi NVARCHAR(200) NULL,
+    DTB REAL NOT NULL CONSTRAINT DF_HocSinh_DTB DEFAULT (0),
+    MaLop NVARCHAR(10) NOT NULL,
+    CONSTRAINT FK_HocSinh_Lop FOREIGN KEY (MaLop) REFERENCES dbo.Lop(MaLop),
+    CONSTRAINT CK_HocSinh_DTB CHECK (DTB >= 0 AND DTB <= 10)
+);
+GO
+
+INSERT INTO dbo.Lop (MaLop, TenLop) VALUES
+(N'10A1', N'Lớp 10A1'),
+(N'10A2', N'Lớp 10A2'),
+(N'10A3', N'Lớp 10A3');
+
+INSERT INTO dbo.HocSinh (MaHS, TenHS, NgaySinh, DiaChi, DTB, MaLop) VALUES
+(N'HS0001', N'Nguyễn Thanh Tùng', '2008-02-11', N'123 Ký Con, Q12', 7.77, N'10A3'),
+(N'HS0002', N'Trần Minh Anh', '2008-06-22', N'Thành phố Hồ Chí Minh', 8.25, N'10A1'),
+(N'HS0003', N'Lê Hoàng Nam', '2008-09-15', N'Thủ Đức', 6.80, N'10A2'),
+(N'HS0006', N'Nguyễn Thanh Bình', '2008-12-01', N'Gò Vấp', 7.10, N'10A3');
+GO
